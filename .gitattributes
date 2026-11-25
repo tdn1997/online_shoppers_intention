@@ -1,0 +1,2 @@
+# The repository stores normalized text. Preserve the UCI CSV checkout bytes for SHA-256.
+/data/online_shoppers_intention.csv text eol=crlf

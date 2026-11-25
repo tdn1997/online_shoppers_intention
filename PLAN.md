@@ -12,18 +12,23 @@ Ba tuần dưới đây là mốc dự kiến. Chưa tìm thấy Proposal hoặc
 - [x] Đã chạy và lưu output trong `01_eda.ipynb`. Notebook có kết quả kiểm tra dữ liệu, thống kê split, ba biểu đồ và bốn nhận xét trên train. Output ghi nhận 0 giá trị thiếu và 125 dòng trùng hoàn toàn được giữ lại.
 - [x] Đã lưu index của split vào `data/split_indices.json` và xác minh lần chạy sau đọc lại đúng các vị trí dòng.
 - [x] Đã chạy `02_training.ipynb`, xuất bảng validation và viết Milestone. Random Forest có Average Precision trung bình cao nhất trên validation (0,3762).
-- [x] Đã chạy `03_evaluation.ipynb` và hoàn thành Report cùng 7 slide PowerPoint. Random Forest đạt AP 0,3542 trên test.
+- [x] Đã chạy `03_evaluation.ipynb` và hoàn thành Report cùng 8 slide PowerPoint. Random Forest đạt AP 0,3542 trên test.
 
 ## Cấu trúc thư mục đề xuất
 
 ```text
 .
 ├── .venv/                         # Có sẵn
+├── README.md
+├── requirements.txt
 ├── PLAN.md
 ├── 01_eda.ipynb                   # Có sẵn
 ├── 02_training.ipynb              # Có sẵn
 ├── 03_evaluation.ipynb            # Có sẵn
 ├── 04_robustness.ipynb            # Phân tích bổ sung trên train
+├── 05_learning_curve.ipynb        # Learning curve theo nhóm
+├── demo.py                        # Gradio cục bộ
+├── project_model.py               # Split train và cấu hình Random Forest
 ├── data/
 │   ├── online_shoppers_intention.csv  # Có sẵn
 │   └── split_indices.json             # Có sẵn
@@ -68,7 +73,7 @@ Theo góp ý của giảng viên, bỏ Accuracy khỏi bộ chỉ số báo cáo
 - [x] **1. Chốt cấu hình trước khi đánh giá test.** Chọn Random Forest theo AP trung bình trên validation. Giữ bộ 16 feature và cấu hình tuần 2. Chốt ngưỡng 0,20964924233624288 bằng cách tối đa hóa F1 lớp mua trên dự đoán out-of-fold của train.
 - [x] **2. Đánh giá cuối.** Đã chạy `03_evaluation.ipynb` bằng `.venv`, fit pipeline trên toàn bộ train và đánh giá trên 2.466 phiên test đã lưu. Notebook có AP, ROC-AUC, Precision, Recall, F1 của lớp mua và confusion matrix.
 - [x] **3. Phân tích lỗi.** Đã thống kê 159 false negative và 513 false positive, so sánh feature giữa các nhóm và xem ví dụ theo điểm dự đoán.
-- [x] **4. Hoàn thiện Report và slide.** Đã viết báo cáo, tạo 7 slide PowerPoint và đối chiếu số liệu test với output notebook.
+- [x] **4. Hoàn thiện Report và slide.** Đã viết báo cáo, tạo 8 slide PowerPoint và đối chiếu số liệu test với output notebook.
 
 **Đầu ra** gồm `03_evaluation.ipynb` với bảng kết quả test và confusion matrix, `reports/report.md` và `reports/slides.pptx`.
 
@@ -79,8 +84,11 @@ Theo góp ý của giảng viên, bỏ Accuracy khỏi bộ chỉ số báo cáo
 - [x] Kiểm tra vững bằng `StratifiedGroupKFold` trên train cho Random Forest và Logistic Regression. Cả năm fold theo nhóm có 0 dòng validation trùng vector feature với phần fit.
 - [x] Vẽ Precision–Recall từ dự đoán out-of-fold theo nhóm và so sánh ngưỡng tuần 3 với ngưỡng ưu tiên Precision.
 - [x] Thử 12 cấu hình Random Forest bằng nested grouped CV trên train. Kết quả fold ngoài chưa cải thiện AP, nên giữ cấu hình tuần 3 cho báo cáo test.
+- [x] Vẽ learning curve theo nhóm ở các mốc 25%, 50%, 75% và 100% số nhóm fit.
+- [x] Bổ sung slide về độ ổn định của kết quả từ grouped CV và nested CV.
+- [x] Viết README, khóa phiên bản thư viện trong `requirements.txt` và tái lập kết quả của cả năm notebook trong bản clone với `.venv` mới.
 - [ ] So sánh có và không có `PageValues` trên cùng fold train/validation, ghi rõ rủi ro leakage liên quan đến tín hiệu giao dịch.
-- [ ] Làm demo Gradio cục bộ từ pipeline đã chốt, dùng dữ liệu phiên mẫu để minh họa đầu vào và đầu ra.
+- [x] Làm demo Gradio cục bộ từ pipeline đã chốt. Hai phiên mẫu minh họa cả hai nhãn, điểm mua qua API khớp với dự đoán trực tiếp của pipeline.
 
 ## Checklist buổi làm đầu tiên
 

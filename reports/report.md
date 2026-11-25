@@ -94,3 +94,16 @@ Trên các dự đoán OOF này, ngưỡng cao hơn giảm 1.122 báo nhầm và
 Thử 12 tổ hợp `max_depth`, `min_samples_leaf` và `class_weight` với nested grouped CV. GridSearchCV chọn theo AP qua 4 fold trong, sau đó cấu hình được đánh giá trên fold ngoài. Trên cùng 5 fold ngoài, AP trung bình là **0,38277** đối với Random Forest cố định và **0,38083** đối với quy trình tinh chỉnh. Chênh lệch trung bình theo cặp là **−0,00193**.
 
 Khi tìm trên toàn bộ train, ứng viên tốt nhất bỏ giới hạn độ sâu, dùng `min_samples_leaf=5` và `class_weight=None`, với AP chọn cấu hình 0,38332. Kết quả trên các fold ngoài chưa cho thấy tinh chỉnh cải thiện AP. Vì vậy, báo cáo giữ cấu hình Random Forest ban đầu cho kết luận chính.
+
+### Learning curve theo nhóm
+
+Giữ nguyên các fold validation theo nhóm và cấu hình Random Forest của tuần 3. Trong mỗi fold, tăng dần tỷ lệ nhóm dùng để fit từ 25% lên 100%. Các dòng cùng nhóm được lấy cùng nhau và tập fit nhỏ nằm trong tập fit lớn hơn.
+
+| Tỷ lệ nhóm fit | Số phiên fit trung bình | AP trung bình ± độ lệch chuẩn |
+|---:|---:|---:|
+| 25% | 1.972,6 | 0,35310 ± 0,02233 |
+| 50% | 3.942,2 | 0,37836 ± 0,02889 |
+| 75% | 5.917,0 | 0,37779 ± 0,02338 |
+| 100% | 7.891,2 | 0,38277 ± 0,02026 |
+
+AP tăng rõ nhất từ 25% lên 50% nhóm. Từ 50% đến 100%, mức tăng trung bình là 0,00441 và điểm ở mốc 75% thấp hơn nhẹ so với 50%. Đây là kết quả của một cách lấy mẫu lồng nhau trong 5 fold. Hiệu năng với lượng dữ liệu vượt ngoài các mốc đã thử vẫn chưa được xác minh. [Notebook learning curve](../05_learning_curve.ipynb)
