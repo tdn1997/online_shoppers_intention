@@ -3,3 +3,7 @@ __pycache__/
 .ipynb_checkpoints/
 .gradio/
 gradio_cached_examples/
+*.py[cod]
+.DS_Store
+Thumbs.db
+~$*.pptx
