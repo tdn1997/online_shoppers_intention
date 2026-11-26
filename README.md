@@ -14,22 +14,24 @@
 
 `demo.py` là lệnh mở demo. `project_model.py` chứa cách đọc split và cấu hình Random Forest dùng chung.
 
-## Cài đặt
+## 1. Cài đặt
 
-Chạy các lệnh từ thư mục gốc của bản clone. Đồ án chạy trên CPU. Bộ phiên bản trong `requirements.txt` đã được kiểm chứng trên Windows với Python **3.15.2**. Các lệnh macOS bên dưới dùng cùng phiên bản Python và thư viện.
+Chạy các lệnh từ thư mục gốc của bản clone. Đồ án chạy trên CPU. Bộ phiên bản trong `requirements.txt` đã được kiểm chứng trên Windows với Python **3.15.2**. Các lệnh macOS dùng cùng phiên bản Python và thư viện, nhưng quy trình chưa được chạy thử trực tiếp trên máy Mac.
+
+Nếu bạn chỉ cần xem hồ sơ đã xuất, mở [Report.html](submission/Report.html), [Milestone.html](submission/Milestone.html) hoặc [Proposal.html](submission/Proposal.html) bằng trình duyệt.
 
 ### Windows
 
-Mở PowerShell.
+Mở PowerShell. Kiểm tra kết quả lệnh đầu tiên là Python **3.15.2** trước khi tạo môi trường.
 
 ```powershell
-python --version
-python -m venv .venv
+py -3.15 --version
+py -3.15 -m venv .venv
 .venv/Scripts/python.exe -m pip install -r requirements.txt
 .venv/Scripts/python.exe -m pip check
 ```
 
-Nếu có nhiều bản Python, dùng `py -3.15 -m venv .venv` để chọn Python 3.15. Trong VS Code, mở notebook và chọn kernel `.venv/Scripts/python.exe`.
+Nếu máy thiếu lệnh `py` nhưng `python --version` trả về Python 3.15.2, dùng `python -m venv .venv` cho bước tạo môi trường. Khi chạy trong VS Code, cài các extension **Python** và **Jupyter**, mở notebook rồi chọn kernel `.venv/Scripts/python.exe`.
 
 ### macOS
 
@@ -42,9 +44,11 @@ python3.15 -m venv .venv
 .venv/bin/python -m pip check
 ```
 
-Trong VS Code, mở notebook rồi dùng **Select Kernel** để chọn `.venv/bin/python`.
+Khi chạy trong VS Code, cài các extension **Python** và **Jupyter**, mở notebook rồi dùng **Select Kernel** để chọn `.venv/bin/python`.
 
-## Chạy lại thí nghiệm
+## 2. Chạy lại thí nghiệm
+
+CSV và `split_indices.json` đã có trong [data/](data/). Giữ nguyên CSV và thứ tự dòng để mã SHA-256 khớp với split đã lưu. Dataset **Online Shoppers Purchasing Intention** có 12.330 phiên, 17 feature gốc và nhãn `Revenue`. Pipeline chính bỏ `PageValues` và dùng 16 feature. [Sakar và Kastro, UCI Machine Learning Repository, 2018, CC BY 4.0](https://doi.org/10.24432/C5F88Q)
 
 | Thứ tự | Notebook | Nội dung |
 |---:|---|---|
@@ -55,7 +59,7 @@ Trong VS Code, mở notebook rồi dùng **Select Kernel** để chọn `.venv/b
 | 5 | [Learning curve](notebooks/05_learning_curve.ipynb) | AP trên các fold nhóm khi tăng số phiên fit. |
 | 6 | [Kiểm tra feature và độ tin cậy](notebooks/06_model_review.ipynb) | So sánh `PageValues`, biến ngữ cảnh và boosting, kiểm tra calibration và tính khoảng bootstrap trên test. |
 
-Chọn **Run All** trên từng notebook hoặc chạy lệnh tương ứng từ thư mục gốc. Notebook 04 có thể mất vài phút.
+Chọn **Run All** theo thứ tự trên hoặc chạy lệnh tương ứng từ thư mục gốc. Notebook 04 có thể mất vài phút. Tùy chọn `--inplace` lưu lại output vào notebook và notebook 02 ghi lại bảng `reports/validation_scores.csv`.
 
 **Windows**
 
@@ -69,9 +73,37 @@ Chọn **Run All** trên từng notebook hoặc chạy lệnh tương ứng từ
 .venv/bin/jupyter-execute notebooks/01_eda.ipynb notebooks/02_training.ipynb notebooks/03_evaluation.ipynb notebooks/04_robustness.ipynb notebooks/05_learning_curve.ipynb notebooks/06_model_review.ipynb --inplace --timeout=600
 ```
 
-CSV và `split_indices.json` đã có trong [data/](data/). Giữ nguyên CSV và thứ tự dòng để mã SHA-256 khớp với split đã lưu. Dataset **Online Shoppers Purchasing Intention** có 12.330 phiên, 17 feature gốc và nhãn `Revenue`. Pipeline chính bỏ `PageValues` và dùng 16 feature. [Sakar và Kastro, UCI Machine Learning Repository, 2018, CC BY 4.0](https://doi.org/10.24432/C5F88Q)
+## 3. Hồ sơ nộp và bảo vệ
 
-## Chạy demo Gradio cục bộ
+| Hạng mục | File |
+|---|---|
+| Proposal | [Notebook](submission/Proposal.ipynb) · [HTML](submission/Proposal.html) |
+| Milestone | [Notebook](submission/Milestone.ipynb) · [HTML](submission/Milestone.html) |
+| Report | [Notebook](submission/Report.ipynb) · [HTML](submission/Report.html) |
+| Presentation | [PowerPoint tiếng Anh](submission/Presentation.pptx) |
+| Kế hoạch | [Tiến độ và checklist trước khi nộp](docs/PLAN.md) |
+| Video và Q&A | [Kế hoạch diễn tập và câu hỏi](docs/defense.md) |
+| Peer Assessment | [Mẫu phiếu cá nhân](docs/peer_assessment.md) |
+
+Mở các bản HTML bằng trình duyệt để đọc hoặc nộp bài. Milestone và Report đã lưu bảng kết quả trong bản HTML, riêng Report còn có hình minh họa. Khi cần xuất lại, chạy hai lệnh dưới đây từ thư mục gốc. Lệnh đầu cập nhật output của Milestone và Report, dùng bảng validation đã lưu hoặc bảng mới tạo ở bước 2. Lệnh sau xuất cả ba notebook thành HTML trong `submission/`. Xem phần phụ lục của Report để tra các thử nghiệm về grouped CV, ngưỡng, learning curve, feature và calibration.
+
+**Windows**
+
+```powershell
+.venv/Scripts/jupyter-execute.exe submission/Milestone.ipynb submission/Report.ipynb --inplace --timeout=600
+.venv/Scripts/jupyter-nbconvert.exe --to html --embed-images --no-input --output-dir submission submission/Proposal.ipynb submission/Milestone.ipynb submission/Report.ipynb
+```
+
+**macOS**
+
+```bash
+.venv/bin/jupyter-execute submission/Milestone.ipynb submission/Report.ipynb --inplace --timeout=600
+.venv/bin/jupyter-nbconvert --to html --embed-images --no-input --output-dir submission submission/Proposal.ipynb submission/Milestone.ipynb submission/Report.ipynb
+```
+
+## Chạy demo Gradio cục bộ (tùy chọn)
+
+Bạn có thể chạy demo ngay sau bước cài đặt.
 
 **Windows**
 
@@ -86,31 +118,3 @@ CSV và `split_indices.json` đã có trong [data/](data/). Giữ nguyên CSV v�
 ```
 
 Mở `http://127.0.0.1:7860`, chọn một phiên mẫu rồi nhấn **Submit**. Có thể sửa các giá trị đầu vào và chạy lại. Demo fit Random Forest cấu hình tuần 3 trên train lúc khởi động, sau đó trả điểm mua gốc từ 0 đến 1 và nhãn theo ngưỡng **0,20965**. Điểm dùng để xếp hạng và gán nhãn trong minh họa offline với dữ liệu tổng hợp theo phiên. Xem [kiểm tra calibration](notebooks/06_model_review.ipynb) để biết mức độ khớp với tỷ lệ mua quan sát. Nhấn **Ctrl+C** để dừng. Nếu cổng bận, truyền `--port 7861` và mở cổng tương ứng.
-
-## Hồ sơ nộp và bảo vệ
-
-| Hạng mục | File |
-|---|---|
-| Proposal | [Notebook](submission/Proposal.ipynb) · [HTML](submission/Proposal.html) |
-| Milestone | [Notebook](submission/Milestone.ipynb) · [HTML](submission/Milestone.html) |
-| Report | [Notebook](submission/Report.ipynb) · [HTML](submission/Report.html) |
-| Presentation | [PowerPoint tiếng Anh](submission/Presentation.pptx) |
-| Kế hoạch | [Tiến độ và checklist trước khi nộp](docs/PLAN.md) |
-| Video và Q&A | [Kế hoạch diễn tập và câu hỏi](docs/defense.md) |
-| Peer Assessment | [Mẫu phiếu cá nhân](docs/peer_assessment.md) |
-
-Các bản HTML là đầu ra nộp bài và đã nhúng bảng kết quả, hình minh họa. Sau khi sửa notebook, chạy lại Milestone và Report từ thư mục gốc trước khi xuất lại HTML. Xem phần phụ lục của Report để tra các thử nghiệm về grouped CV, ngưỡng, learning curve, feature và calibration.
-
-**Windows**
-
-```powershell
-.venv/Scripts/jupyter-nbconvert.exe --to notebook --execute --inplace submission/Milestone.ipynb submission/Report.ipynb
-.venv/Scripts/jupyter-nbconvert.exe --to html --embed-images --no-input --output-dir submission submission/Proposal.ipynb submission/Milestone.ipynb submission/Report.ipynb
-```
-
-**macOS**
-
-```bash
-.venv/bin/jupyter-nbconvert --to notebook --execute --inplace submission/Milestone.ipynb submission/Report.ipynb
-.venv/bin/jupyter-nbconvert --to html --embed-images --no-input --output-dir submission submission/Proposal.ipynb submission/Milestone.ipynb submission/Report.ipynb
-```
