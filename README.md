@@ -41,19 +41,20 @@ Trong VS Code, mở notebook rồi dùng **Select Kernel** để chọn `.venv/b
 | 3 | [Đánh giá](03_evaluation.ipynb) | Chọn ngưỡng từ dự đoán out-of-fold trên train và tái lập kết quả test của cấu hình tuần 3. |
 | 4 | [Kiểm tra độ ổn định](04_robustness.ipynb) | Grouped CV, đường Precision–Recall và nested CV với 12 cấu hình Random Forest. |
 | 5 | [Learning curve](05_learning_curve.ipynb) | AP trên các fold nhóm khi tăng số phiên fit. |
+| 6 | [Kiểm tra feature và độ tin cậy](06_model_review.ipynb) | So sánh `PageValues`, biến ngữ cảnh và boosting, kiểm tra calibration và tính khoảng bootstrap trên test. |
 
 Chọn **Run All** trên từng notebook hoặc chạy lệnh tương ứng từ thư mục gốc. Notebook 04 có thể mất vài phút.
 
 **Windows**
 
 ```powershell
-.venv/Scripts/jupyter-execute.exe 01_eda.ipynb 02_training.ipynb 03_evaluation.ipynb 04_robustness.ipynb 05_learning_curve.ipynb --inplace --timeout=600
+.venv/Scripts/jupyter-execute.exe 01_eda.ipynb 02_training.ipynb 03_evaluation.ipynb 04_robustness.ipynb 05_learning_curve.ipynb 06_model_review.ipynb --inplace --timeout=600
 ```
 
 **macOS**
 
 ```bash
-.venv/bin/jupyter-execute 01_eda.ipynb 02_training.ipynb 03_evaluation.ipynb 04_robustness.ipynb 05_learning_curve.ipynb --inplace --timeout=600
+.venv/bin/jupyter-execute 01_eda.ipynb 02_training.ipynb 03_evaluation.ipynb 04_robustness.ipynb 05_learning_curve.ipynb 06_model_review.ipynb --inplace --timeout=600
 ```
 
 CSV và `split_indices.json` đã có trong [data/](data/). Giữ nguyên CSV và thứ tự dòng để mã SHA-256 khớp với split đã lưu. Dataset **Online Shoppers Purchasing Intention** có 12.330 phiên, 17 feature gốc và nhãn `Revenue`. Pipeline chính bỏ `PageValues` và dùng 16 feature. [Sakar và Kastro, UCI Machine Learning Repository, 2018, CC BY 4.0](https://doi.org/10.24432/C5F88Q)
@@ -72,10 +73,10 @@ CSV và `split_indices.json` đã có trong [data/](data/). Giữ nguyên CSV v�
 .venv/bin/python demo.py
 ```
 
-Mở `http://127.0.0.1:7860`, chọn một phiên mẫu rồi nhấn **Submit**. Có thể sửa các giá trị đầu vào và chạy lại. Demo fit Random Forest cấu hình tuần 3 trên train lúc khởi động, sau đó trả điểm mua và nhãn theo ngưỡng **0,20965**. Điểm mua dùng để minh họa trên dữ liệu tổng hợp của phiên. Nhấn **Ctrl+C** để dừng. Nếu cổng bận, truyền `--port 7861` và mở cổng tương ứng.
+Mở `http://127.0.0.1:7860`, chọn một phiên mẫu rồi nhấn **Submit**. Có thể sửa các giá trị đầu vào và chạy lại. Demo fit Random Forest cấu hình tuần 3 trên train lúc khởi động, sau đó trả điểm mua gốc từ 0 đến 1 và nhãn theo ngưỡng **0,20965**. Điểm dùng để xếp hạng và gán nhãn trong minh họa offline với dữ liệu tổng hợp theo phiên. Xem [kiểm tra calibration](06_model_review.ipynb) để biết mức độ khớp với tỷ lệ mua quan sát. Nhấn **Ctrl+C** để dừng. Nếu cổng bận, truyền `--port 7861` và mở cổng tương ứng.
 
 ## Đọc kết quả
 
 - [Milestone](reports/milestone.md) tóm tắt so sánh mô hình trên validation.
-- [Báo cáo](reports/report.md) có kết quả test, phân tích lỗi và phụ lục các thử nghiệm trên train.
+- [Báo cáo](reports/report.md) có kết quả test, khoảng bootstrap, phân tích lỗi và phụ lục các thử nghiệm trên train.
 - [Slide PowerPoint](reports/slides.pptx) trình bày bài toán, phương pháp, kết quả và độ ổn định.

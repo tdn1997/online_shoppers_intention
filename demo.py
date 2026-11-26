@@ -51,13 +51,13 @@ def build_demo():
         inputs=inputs,
         outputs=[
             gr.Textbox(label="Nhãn dự đoán"),
-            gr.Number(label="Điểm mua (0–1)", precision=6),
+            gr.Number(label="Điểm mua gốc của mô hình (0–1)", precision=6),
         ],
         title="Dự đoán khả năng mua hàng",
         description=(
             "Chọn một phiên mẫu rồi nhấn Submit, hoặc sửa 16 đặc trưng tổng hợp theo phiên. "
             f"Random Forest dùng ngưỡng {THRESHOLD:.5f} để gán nhãn mua. "
-            "Điểm mua là đầu ra của mô hình dùng cho minh họa offline."
+            "Điểm mua dùng để xếp hạng và gán nhãn trong minh họa offline."
         ),
         examples=samples,
         cache_examples=False,

@@ -27,6 +27,7 @@ Ba tuần dưới đây là mốc dự kiến. Chưa tìm thấy Proposal hoặc
 ├── 03_evaluation.ipynb            # Có sẵn
 ├── 04_robustness.ipynb            # Phân tích bổ sung trên train
 ├── 05_learning_curve.ipynb        # Learning curve theo nhóm
+├── 06_model_review.ipynb           # Feature, calibration và khoảng bootstrap
 ├── demo.py                        # Gradio cục bộ
 ├── project_model.py               # Split train và cấu hình Random Forest
 ├── data/
@@ -87,7 +88,9 @@ Theo góp ý của giảng viên, bỏ Accuracy khỏi bộ chỉ số báo cáo
 - [x] Vẽ learning curve theo nhóm ở các mốc 25%, 50%, 75% và 100% số nhóm fit.
 - [x] Bổ sung slide về độ ổn định của kết quả từ grouped CV và nested CV.
 - [x] Viết README, khóa phiên bản thư viện trong `requirements.txt` và tái lập kết quả của cả năm notebook trong bản clone với `.venv` mới.
-- [ ] So sánh có và không có `PageValues` trên cùng fold train/validation, ghi rõ rủi ro leakage liên quan đến tín hiệu giao dịch.
+- [x] So sánh có và không có `PageValues`, bộ 8 biến ngữ cảnh và một cấu hình HistGradientBoosting trên cùng fold train/validation.
+- [x] Kiểm tra calibration sigmoid trên dự đoán OOF theo nhóm. Ghi Brier loss, log loss và biểu đồ calibration trong notebook, rồi làm rõ cách đọc điểm gốc trong demo.
+- [x] Tính khoảng bootstrap theo nhóm cho AP, Precision và Recall của mô hình test đã chốt. Đưa khoảng và giả định vào báo cáo.
 - [x] Làm demo Gradio cục bộ từ pipeline đã chốt. Hai phiên mẫu minh họa cả hai nhãn, điểm mua qua API khớp với dự đoán trực tiếp của pipeline.
 
 ## Checklist buổi làm đầu tiên

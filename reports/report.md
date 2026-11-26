@@ -50,6 +50,18 @@ Chọn Random Forest với 100 cây, `max_depth=12`, `min_samples_leaf=5`, `rand
 
 Mô hình phát hiện 58,38% phiên mua. Trong 736 phiên được dự đoán mua, 223 phiên thực sự mua (30,30%). AP và ROC-AUC dùng xác suất gốc. Precision, Recall, F1 và confusion matrix dùng nhãn ở ngưỡng đã chốt. [Output đánh giá test](../03_evaluation.ipynb)
 
+### Độ bất định của kết quả
+
+Ước lượng khoảng bootstrap 95% với 2.000 lượt lấy mẫu có hoàn lại trên 2.454 nhóm test. Mỗi nhóm gồm các phiên có cùng bộ 16 feature. Giữ mô hình và ngưỡng cố định ở mọi lượt lấy mẫu.
+
+| Chỉ số | Kết quả test | Khoảng bootstrap 95% |
+|---|---:|---:|
+| Average Precision | 0,3542 | 0,3101–0,4053 |
+| Precision lớp mua | 30,30% | 26,94–33,65% |
+| Recall lớp mua | 58,38% | 53,20–63,23% |
+
+Các khoảng này mô tả biến động khi lấy mẫu lại test với giả định các nhóm độc lập. Độ biến động khi huấn luyện trên dữ liệu khác hoặc chuyển sang website khác vẫn chưa được xác minh. [Notebook tính khoảng bootstrap](../06_model_review.ipynb) · [Phương pháp bootstrap](https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.bootstrap.html)
+
 ## 4. Phân tích lỗi
 
 - **159 false negatives.** Trung vị nhóm bỏ sót là 18 trang sản phẩm và 603,7 giây, so với 42 trang và 1.460,9 giây ở nhóm dự đoán đúng phiên mua. Dòng 2.392 (vị trí bắt đầu từ 0 trong CSV) có mua nhưng chỉ xem 3 trang trong 127 giây và nhận điểm mua 0,0180.
@@ -59,7 +71,7 @@ Các đối chiếu trên mô tả những nhóm lỗi trong test. Chúng cho th
 
 ## 5. Giới hạn và kết luận
 
-Kết quả đến từ một split của một dataset có lớp mua thiểu số. Các dòng giống nhau có thể xuất hiện ở nhiều tập do thiếu mã phiên để xác định chúng có phải cùng một phiên hay không. Feature tổng hợp theo phiên có thể cần thông tin chỉ có sau khi phiên kết thúc. Hiệu năng khi dự đoán sớm hoặc áp dụng cho website khác vẫn chưa được xác minh.
+Kết quả đến từ một split của một dataset có lớp mua thiểu số. Có 29 phiên test có vector 16 feature trùng với ít nhất một phiên train. CSV thiếu mã phiên để xác định chúng là bản sao hay các phiên khác nhau có cùng giá trị tổng hợp. Một số feature tổng hợp có thể cần dữ liệu tới cuối phiên. Hiệu năng khi dự đoán sớm hoặc áp dụng cho website khác vẫn chưa được xác minh. [Kiểm tra trùng vector](../06_model_review.ipynb)
 
 Random Forest dẫn đầu trên validation và phát hiện được hơn một nửa số phiên mua trên test tại ngưỡng đã chọn. Với 513 báo nhầm và 159 bỏ sót, lựa chọn ngưỡng cho ứng dụng thực tế còn phụ thuộc chi phí của từng loại lỗi.
 
@@ -107,3 +119,32 @@ Giữ nguyên các fold validation theo nhóm và cấu hình Random Forest củ
 | 100% | 7.891,2 | 0,38277 ± 0,02026 |
 
 AP tăng rõ nhất từ 25% lên 50% nhóm. Từ 50% đến 100%, mức tăng trung bình là 0,00441 và điểm ở mốc 75% thấp hơn nhẹ so với 50%. Đây là kết quả của một cách lấy mẫu lồng nhau trong 5 fold. Hiệu năng với lượng dữ liệu vượt ngoài các mốc đã thử vẫn chưa được xác minh. [Notebook learning curve](../05_learning_curve.ipynb)
+
+### Kiểm tra bộ feature và mô hình boosting
+
+Dùng cùng 5 fold theo nhóm trên train và tính AP trung bình qua fold. Mỗi fold dùng nhóm xác định từ 16 feature chính cho mọi cấu hình.
+
+| Cấu hình | AP trung bình ± độ lệch chuẩn |
+|---|---:|
+| Random Forest · 16 feature chính | 0,38277 ± 0,02026 |
+| Random Forest · thêm `PageValues` | 0,74265 ± 0,01810 |
+| Random Forest · 8 biến ngữ cảnh | 0,26739 ± 0,01231 |
+| HistGradientBoosting · 16 feature chính | 0,35902 ± 0,02126 |
+
+`PageValues` là chỉ số giá trị trang liên quan đến giao dịch. Mức tăng AP cho thấy mô hình có thể khai thác mạnh thông tin của cột này. Để xác định có leakage hay không, cần biết giá trị được tính từ dữ liệu của giai đoạn nào và có sẵn khi dự đoán hay chưa. Cấu hình báo cáo chính dùng 16 feature vì thời điểm có sẵn của `PageValues` chưa được xác minh. [Mô tả dữ liệu UCI](https://archive.ics.uci.edu/dataset/468/online+shoppers+purchasing+intention+dataset)
+
+Bộ 8 biến ngữ cảnh gồm `Month`, `OperatingSystems`, `Browser`, `Region`, `TrafficType`, `VisitorType`, `Weekend` và `SpecialDay`. So sánh này đo tác động của việc bỏ các biến tổng hợp hành vi. Đánh giá dự đoán sau ba lượt xem trang cần timestamp và chuỗi sự kiện trong phiên để dựng feature tại thời điểm đó. CSV hiện tại chỉ có dữ liệu tổng hợp theo phiên. [Nghiên cứu về dự đoán sớm trong phiên](https://link.springer.com/article/10.1007/s12525-020-00448-x)
+
+Cấu hình HistGradientBoosting được thử với 100 vòng boosting, `learning_rate=0.1` và `max_leaf_nodes=31`, dùng hỗ trợ biến phân loại theo dtype. Cấu hình này có AP thấp hơn Random Forest trên cùng fold. Kết luận giới hạn ở cấu hình đã thử. [Notebook so sánh](../06_model_review.ipynb) · [Tài liệu HistGradientBoostingClassifier](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.HistGradientBoostingClassifier.html)
+
+### Calibration của điểm mua
+
+So sánh điểm Random Forest gốc với điểm sau calibration sigmoid. Bộ hiệu chỉnh được học trong 4 fold nhóm nội bộ của từng fold ngoài. Bảng dưới tính trên dự đoán OOF của 5 fold ngoài. Baseline dùng tỷ lệ phiên mua của phần fit cho mọi phiên validation trong fold tương ứng.
+
+| Phương án | Brier loss ↓ | Log loss ↓ |
+|---|---:|---:|
+| Random Forest gốc | 0,11315 | 0,36059 |
+| Calibration sigmoid | 0,11361 | 0,36560 |
+| Tỷ lệ mua phần fit | 0,13077 | 0,43078 |
+
+Ở nhóm điểm cao nhất của Random Forest gốc, điểm trung bình là 33,10% và tỷ lệ mua quan sát là 36,64%. Sau sigmoid, các số tương ứng ở nhóm điểm cao nhất là 38,27% và 36,59%. Sigmoid thu hẹp chênh lệch tuyệt đối ở nhóm này, nhưng cả hai loss tính trên toàn bộ OOF đều tăng nhẹ. Demo dùng điểm gốc để xếp hạng và gán nhãn tại ngưỡng tuần 3. [Biểu đồ calibration](../06_model_review.ipynb) · [Tài liệu hiệu chỉnh xác suất](https://scikit-learn.org/stable/modules/calibration.html)
